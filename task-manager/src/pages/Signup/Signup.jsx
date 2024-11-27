@@ -5,9 +5,9 @@ import * as Yup from "yup";
 import { HiEye, HiEyeOff } from "react-icons/hi";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
+import { useNavigate } from "react-router-dom"
 
-// Yup validation schema
+
 const schema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   email: Yup.string().email("Invalid email format").required("Email is required"),
@@ -19,9 +19,9 @@ const schema = Yup.object().shape({
 const Signup = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
-  // React Hook Form setup with Yup validation
+ 
   const {
     register,
     handleSubmit,
@@ -31,15 +31,15 @@ const Signup = () => {
   });
 
   const handleSignup = async (data) => {
-    console.log("Handle Signup called with data:", data); // Debugging step
-    setIsLoading(true); // Start loader
+    console.log("Handle Signup called with data:", data); 
+    setIsLoading(true);
     try {
       const response = await axios.post(
         "https://task-management-server-pi-ten.vercel.app/user/register",
         data
       );
 
-      // Show success message
+
       Swal.fire({
         title: "Success",
         text: "You have signed up successfully!",
@@ -49,11 +49,10 @@ const Signup = () => {
 
       console.log("Signed up", response.data);
 
-      // Redirect to login after successful signup
       navigate("/login");
 
     } catch (error) {
-      // Show error message
+    
       Swal.fire({
         title: "Error",
         text: error.response?.data?.message || "Signup failed!",
@@ -61,7 +60,7 @@ const Signup = () => {
         confirmButtonText: "Try Again",
       });
     } finally {
-      setIsLoading(false); // Stop loader
+      setIsLoading(false); 
     }
   };
 
@@ -70,7 +69,7 @@ const Signup = () => {
       <div className="min-w-[36%] p-2 md:p-8 border rounded-md shadow-md">
         <h2 className="text-xl font-bold mb-4">Sign Up</h2>
         <form onSubmit={handleSubmit(handleSignup)}>
-          {/* Name Field */}
+        
           <div className="mb-4">
             <input
               type="text"
@@ -81,7 +80,7 @@ const Signup = () => {
             {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           </div>
 
-          {/* Email Field */}
+  
           <div className="mb-4">
             <input
               type="email"
@@ -92,7 +91,7 @@ const Signup = () => {
             {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           </div>
 
-          {/* Password Field */}
+  
           <div className="mb-4 relative">
             <input
               type={passwordVisible ? "text" : "password"}
@@ -109,11 +108,11 @@ const Signup = () => {
             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
           </div>
 
-          {/* Submit Button */}
+
           <button
             type="submit"
             className="bg-indigo-500 text-white rounded-md px-4 py-2 w-full disabled:opacity-50"
-            disabled={isLoading} // Disable button when loading
+            disabled={isLoading} 
           >
             {isLoading ? (
               <div className="loader">Loading...</div>
@@ -123,7 +122,7 @@ const Signup = () => {
           </button>
         </form>
 
-        {/* "Do you already have an account?" Link */}
+   
         <div className="mt-4 text-center">
           <p>
             Already have an account?{" "}

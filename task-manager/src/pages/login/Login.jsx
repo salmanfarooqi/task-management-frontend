@@ -20,9 +20,8 @@ const schema = Yup.object().shape({
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
 
-  // React Hook Form setup with Yup validation
   const {
     register,
     handleSubmit,
@@ -31,9 +30,9 @@ const Login = () => {
     resolver: yupResolver(schema),
   });
 
-  // Handle form submission
+  
   const handleLogin = async (data) => {
-    setIsLoading(true); // Start loading indicator
+    setIsLoading(true); 
 
     try {
       const response = await axios.post(
@@ -41,7 +40,6 @@ const Login = () => {
         data
       );
 
-      // Show success message
       Swal.fire({
         title: "Success",
         text: "Login successful!",
@@ -49,14 +47,14 @@ const Login = () => {
         confirmButtonText: "OK",
       });
 
-      // Redirect to home page after successful login
+
 
       console.log("....",response.token)
 
       localStorage.setItem('authToken',response.data.token)
       navigate("/");
     } catch (error) {
-      // Show error message
+     
       Swal.fire({
         title: "Error",
         text: error.response?.data?.message || "Login failed!",
@@ -64,7 +62,7 @@ const Login = () => {
         confirmButtonText: "Try Again",
       });
     } finally {
-      setIsLoading(false); // Stop loading indicator
+      setIsLoading(false); 
     }
   };
 
@@ -74,7 +72,7 @@ const Login = () => {
         <h2 className="text-2xl font-bold text-gray-800 text-center">Login</h2>
 
         <form className="mt-6" onSubmit={handleSubmit(handleLogin)}>
-          {/* Email Field */}
+      
           <div className="mb-4">
             <label className="block text-gray-600">Email</label>
             <input
@@ -88,7 +86,7 @@ const Login = () => {
             )}
           </div>
 
-          {/* Password Field */}
+        
           <div className="mb-4 relative">
             <label className="block text-gray-600">Password</label>
             <input
@@ -108,7 +106,7 @@ const Login = () => {
             )}
           </div>
 
-          {/* Login Button */}
+      
           <button
             type="submit"
             className="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600"
@@ -118,7 +116,7 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Link to Signup Page */}
+  
         <div className="mt-4 text-center">
           <p>
             Don't have an account?{" "}

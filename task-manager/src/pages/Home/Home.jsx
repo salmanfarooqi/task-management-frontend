@@ -9,7 +9,7 @@ const Home = () => {
   const [tasks, setTasks] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editTask, setEditTask] = useState(null);
-  const [viewTask, setViewTask] = useState(null); // New state for viewing task details
+  const [viewTask, setViewTask] = useState(null);
   const [statusFilter, setStatusFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -18,6 +18,7 @@ const Home = () => {
       const response = await axios.get("https://task-management-server-pi-ten.vercel.app/task");
       console.log("Tasks", response.data);
       setTasks(response.data.tasks);
+      console.log("fetch ir reloaded");
     } catch (error) {
       console.error("Error fetching tasks:", error);
       alert("Failed to load tasks. Please try again later.");
@@ -28,34 +29,56 @@ const Home = () => {
     fetchTasks();
   }, []);
 
-  // Handle creating or updating a task
   const handleCreateTask = async (newTask) => {
     try {
+      const token = localStorage.getItem("authToken");
+
       if (editTask) {
-        const updatedTask = { ...newTask, status: editTask.status };
-        const response = await axios.put(
-          `https://task-management-server-pi-ten.vercel.app/task/${editTask.id}`,
-          updatedTask
+        const { title, description, status, dueDate } = newTask;
+
+        await axios.put(
+          `https://task-management-server-pi-ten.vercel.app/tass/${editTask._id}`,
+          {
+            title,
+            description,
+            status: editTask.status || status,
+            dueDate,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        const updatedTasks = tasks.map((task) =>
-          task.id === editTask.id ? response.data.task : task
-        );
-        setTasks(updatedTasks);
+
+        await fetchTasks();
         setEditTask(null);
       } else {
-        const response = await axios.post(
+        const { title, description, dueDate } = newTask;
+
+        await axios.post(
           "https://task-management-server-pi-ten.vercel.app/task",
-          newTask
+          {
+            title,
+            description,
+            dueDate,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
-        fetchTasks();
+
+        await fetchTasks();
+        setShowModal(false);
       }
-      setShowModal(false);
     } catch (error) {
+      await fetchTasks();
       console.error("Error saving task:", error);
     }
   };
 
-  // Handle deleting a task
   const handleDeleteTask = async (taskToDelete) => {
     try {
       const token = localStorage.getItem("authToken");
@@ -69,7 +92,7 @@ const Home = () => {
             },
           }
         );
-        fetchTasks();
+        await fetchTasks();
         Swal.fire({
           title: "Success",
           text: "Task deleted successfully!",
@@ -89,13 +112,12 @@ const Home = () => {
     }
   };
 
-  // Handle editing a task
   const handleEditTask = (taskToEdit) => {
     setEditTask(taskToEdit);
     setShowModal(true);
   };
 
-  // Handle viewing a task (by id)
+ 
   const handleViewTask = async (taskId) => {
     try {
       const response = await axios.get(
@@ -104,29 +126,14 @@ const Home = () => {
       setViewTask(response.data.task);
     } catch (error) {
       console.error("Error fetching task details:", error);
-      alert("Failed to load task details.");
+      
     }
   };
 
-  // Handle status change
-  const handleStatusChange = async (task, newStatus) => {
-    try {
-      const updatedTask = { ...task, status: newStatus };
-      const response = await axios.put(
-        `https://task-management-server-pi-ten.vercel.app/task/${task._id}`,
-        updatedTask
-      );
-      const updatedTasks = tasks.map((t) =>
-        t.id === task._id ? response.data.task : t
-      );
-      setTasks(updatedTasks);
-    } catch (error) {
-      console.error("Error updating task status:", error);
-      alert("Failed to update the task status. Please try again.");
-    }
-  };
 
-  // Filter tasks based on search query and status
+ 
+
+
   const filteredTasks = tasks.filter((task) => {
     const matchesStatus =
       statusFilter === "All" || task.status === statusFilter;
@@ -149,23 +156,24 @@ const Home = () => {
   };
 
   return (
-    <div className="">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="mb-4 p-4 flex items-center justify-between">
+      <div className="mb-4 p-4 md:flex md:items-center md:justify-between">
         <button
           onClick={handleCreate}
-          className="bg-indigo-500 text-white px-4 py-2 rounded-md"
+          className="bg-indigo-500 text-white px-4 py-2 rounded-md w-full md:w-auto"
         >
           Create Task
         </button>
-        <div className="flex gap-4 items-center">
+        <div className="flex gap-4 items-center mt-4 md:mt-0 w-full md:w-auto">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border px-4 py-2 rounded-md"
+            className="border px-4 py-2 rounded-md w-full md:w-auto"
           >
             <option value="All">All</option>
             <option value="pending">Pending</option>
+            <option value="inprogress">in progres</option>
             <option value="completed">Completed</option>
           </select>
           <input
@@ -173,7 +181,7 @@ const Home = () => {
             placeholder="Search..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="border px-4 py-2 rounded-md"
+            className="border px-4 py-2 rounded-md w-full md:w-auto"
           />
         </div>
       </div>
@@ -197,7 +205,9 @@ const Home = () => {
             <p><strong>Description:</strong> {viewTask.description}</p>
             <p><strong>Status:</strong> {viewTask.status}</p>
             <p><strong>Due Date:</strong> {viewTask.dueDate}</p>
-            <button onClick={() => setViewTask(null)} className="close-modal">Close</button>
+            <button onClick={() => setViewTask(null)} className="close-modal">
+              Close
+            </button>
           </div>
         </div>
       )}
@@ -206,7 +216,7 @@ const Home = () => {
         tasks={filteredTasks}
         onDelete={handleDeleteTask}
         onEdit={handleEditTask}
-        onView={handleViewTask} // Passing the view handler to TaskTable
+        onView={handleViewTask}
       />
     </div>
   );

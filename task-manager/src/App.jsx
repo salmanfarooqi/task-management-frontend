@@ -3,10 +3,6 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/Home/Home";
 import Login from "./pages/login/Login";
 import Signup from "./pages/Signup/Signup";
-// import Home from "./pages/Home";
-// import Login from "./pages/Login"; // Correct path to the Login component
-// import Signup from "./pages/Signup";
-
 
 const App = () => {
 

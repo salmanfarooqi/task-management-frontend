@@ -21,9 +21,9 @@ const Header = ({  }) => {
   }
   return (
     <header className="bg-indigo-500 text-white px-6 py-4 flex justify-between items-center shadow-md">
-      {/* Logo Section */}
+   
       <div
-        className="text-2xl font-bold cursor-pointer"
+        className=" text-sm text-nowrap md:text-2xl font-bold cursor-pointer"
         onClick={() => navigate("/")}
       >
         Task Manager
@@ -31,12 +31,12 @@ const Header = ({  }) => {
 
 
       <div
-        className="text-2xl font-bold cursor-pointer"
+        className="text-2xl hidden    md:flex font-bold cursor-pointer"
         onClick={() => navigate("/")}
       >
         Welcome to our task Manger system
       </div>
-      {/* Navigation Links */}
+
       <nav className="flex items-center space-x-4">
         <button
           onClick={() => navigate("/")}

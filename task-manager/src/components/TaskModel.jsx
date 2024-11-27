@@ -5,7 +5,6 @@ import * as yup from "yup";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-// Validation Schema with Yup
 const taskSchema = yup.object().shape({
   title: yup.string().required("Title is required").max(50, "Title cannot exceed 50 characters"),
   description: yup
@@ -43,23 +42,21 @@ const CreateTaskModal = ({ onClose, onSubmit, initialData }) => {
         throw new Error("No token found");
       }
 
-      // Prepare the headers with authorization
+    
       const headers = {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       };
 
-      // API endpoint to create or update task
       const url = initialData
         ? `https://task-management-server-pi-ten.vercel.app/task/${initialData._id}`
         : "https://task-management-server-pi-ten.vercel.app/task";
 
-      // Determine if it's a create or update request
+    
       const response = initialData
         ? await axios.put(url, data, { headers })
         : await axios.post(url, data, { headers });
 
-      // On success
       Swal.fire({
         title: "Success",
         text: `Task ${initialData ? "updated" : "created"} successfully!`,
@@ -71,7 +68,7 @@ const CreateTaskModal = ({ onClose, onSubmit, initialData }) => {
       onClose();
       reset();
     } catch (error) {
-      // Handle error (show error message using Swal)
+   
       Swal.fire({
         title: "Error",
         text: error.response?.data?.message || "Failed to create task",
@@ -88,7 +85,7 @@ const CreateTaskModal = ({ onClose, onSubmit, initialData }) => {
           {initialData ? "Edit Task" : "Create Task"}
         </h3>
         <form onSubmit={handleSubmit(submitHandler)}>
-          {/* Title Field */}
+    
           <div className="mb-4">
             <label className="block text-gray-600 font-medium">Title</label>
             <input
@@ -101,7 +98,7 @@ const CreateTaskModal = ({ onClose, onSubmit, initialData }) => {
             {errors.title && <span className="text-red-500 text-sm">{errors.title.message}</span>}
           </div>
 
-          {/* Description Field */}
+        
           <div className="mb-6">
             <label className="block text-gray-600 font-medium">Description</label>
             <textarea
@@ -116,7 +113,7 @@ const CreateTaskModal = ({ onClose, onSubmit, initialData }) => {
             )}
           </div>
 
-          {/* Due Date Field */}
+       
           <div className="mb-3">
             <label className="block text-gray-600 font-medium">Due Date</label>
             <input
@@ -131,7 +128,7 @@ const CreateTaskModal = ({ onClose, onSubmit, initialData }) => {
             )}
           </div>
 
-          {/* Status Dropdown (only in Edit Task mode) */}
+         
           {initialData && (
             <div className="mb-3">
               <label className="block text-gray-600 font-medium">Status</label>
@@ -151,7 +148,7 @@ const CreateTaskModal = ({ onClose, onSubmit, initialData }) => {
             </div>
           )}
 
-          {/* Action Buttons */}
+        
           <div className="flex justify-end">
             <button
               type="button"
